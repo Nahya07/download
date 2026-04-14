@@ -4,27 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Downloader Pro - Ziyotech</title>
+    <title>TikTok Downloader Pro - Ziyotech Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #050505;
-            background-image: radial-gradient(circle at top right, #1e1b4b, #050505);
+            background-image: radial-gradient(circle at top right, #1a1a2e, #050505);
         }
         .glass {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .btn-gradient {
-            background: linear-gradient(90deg, #ff0050, #00f2fe);
-            transition: all 0.3s ease;
+        .shimmer {
+            background: linear-gradient(90deg, #ff0050, #00f2fe, #ff0050);
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
         }
-        .btn-gradient:hover {
-            filter: brightness(1.2);
-            transform: translateY(-2px);
+        @keyframes shimmer {
+            to { background-position: 200% center; }
         }
     </style>
 </head>
@@ -33,78 +33,80 @@
     <div class="max-w-xl w-full">
         <div class="text-center mb-10">
             <h1 class="text-5xl font-extrabold tracking-tighter mb-3 uppercase italic">
-                TT <span class="text-cyan-400">ZIYOTECH</span>
+                TT <span class="text-transparent bg-clip-text shimmer">ZIYOTECH</span>
             </h1>
-            <p class="text-gray-400 text-xs tracking-[0.3em] font-bold">PREMIUM VIDEO ENGINE</p>
+            <p class="text-gray-400 text-xs tracking-[0.3em] font-bold">PREMIUM VIDEO DOWNLOADER</p>
         </div>
 
         <div class="glass rounded-[2.5rem] p-8 shadow-2xl">
             <div class="space-y-6">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 ml-1 text-left">Link Video TikTok</label>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 ml-1 text-left">Link Video TikTok</label>
                     <input type="text" id="videoUrl" 
-                        placeholder="Tempel link di sini..." 
-                        class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-cyan-500 outline-none transition-all text-white placeholder-gray-600">
+                        placeholder="Tempel link video di sini..." 
+                        class="w-full bg-black/50 border border-white/10 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-pink-500 outline-none transition-all text-white placeholder-gray-600">
                 </div>
 
                 <button onclick="fetchVideo()" id="btnAction" 
-                    class="w-full btn-gradient py-4 rounded-2xl font-black text-lg text-black flex items-center justify-center gap-3">
-                    <span id="btnText">DOWNLOAD VIDEO</span>
+                    class="w-full bg-white text-black hover:bg-gray-200 py-4 rounded-2xl font-black text-lg transition-all transform active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-white/5">
+                    <span id="btnText">AMBIL VIDEO</span>
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </button>
             </div>
 
             <!-- Loader -->
             <div id="loader" class="hidden mt-10 text-center">
-                <div class="inline-block w-10 h-10 border-4 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin mb-3"></div>
-                <p class="text-xs text-gray-500 font-bold tracking-widest animate-pulse uppercase">Memproses Request...</p>
+                <div class="inline-block w-10 h-10 border-4 border-pink-500/20 border-t-pink-500 rounded-full animate-spin mb-3"></div>
+                <p class="text-xs text-gray-500 font-bold tracking-widest animate-pulse uppercase">Sedang Memproses...</p>
             </div>
 
             <!-- Result -->
             <div id="result" class="hidden mt-10 space-y-4">
                 <div class="flex items-center gap-4 p-4 bg-white/5 rounded-3xl border border-white/10">
-                    <img id="vCover" src="" class="w-16 h-16 object-cover rounded-xl border border-white/10 shadow-lg">
+                    <img id="vCover" src="" class="w-20 h-20 object-cover rounded-2xl border border-white/10 bg-gray-900 shadow-xl">
                     <div class="flex-1 overflow-hidden text-left">
-                        <h3 id="vTitle" class="font-bold text-lg truncate">Video Siap</h3>
-                        <p class="text-xs text-green-400 font-bold uppercase tracking-widest">Kualitas Tanpa Watermark</p>
+                        <h3 id="vTitle" class="font-bold text-lg truncate text-white">Video Ditemukan</h3>
+                        <p class="text-[10px] text-pink-500 font-bold uppercase tracking-widest">NO WATERMARK READY</p>
                     </div>
                 </div>
                 
-                <button id="dlNow" class="w-full bg-white text-black p-5 rounded-2xl font-black text-xl hover:bg-cyan-400 transition-all flex items-center justify-center gap-3">
-                    UNDUH MP4 SEKARANG
+                <button id="dlBtn" class="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white p-5 rounded-2xl font-black text-xl hover:opacity-90 transition-all flex items-center justify-center gap-3">
+                    DOWNLOAD MP4
                 </button>
             </div>
 
-            <!-- Error Box -->
-            <div id="error" class="hidden mt-6 p-4 bg-red-900/20 border border-red-500/30 rounded-2xl text-red-400 text-xs font-bold text-center">
+            <!-- Debug / Error Box -->
+            <div id="error" class="hidden mt-6 p-4 bg-red-950/30 border border-red-500/30 rounded-2xl text-red-400 text-[10px] font-mono text-left overflow-x-auto">
+                <p id="errorText"></p>
             </div>
         </div>
 
-        <p class="mt-8 text-center text-[10px] text-gray-600 uppercase tracking-[0.5em] font-black">Ziyotech TikTok Service</p>
+        <p class="mt-8 text-center text-[10px] text-gray-600 uppercase tracking-[0.5em] font-black italic">Powered by Ziyotech API Service</p>
     </div>
 
     <script>
-        // Gunakan kredensial yang Bos berikan
         const RAPID_KEY = "83d6e85235msh149468d45ef63bdp118d8djsnf928a331895f";
         const RAPID_HOST = "ziyotech-tik-tok-downloader.p.rapidapi.com";
 
         async function fetchVideo() {
-            const inputVal = document.getElementById('videoUrl').value.trim();
+            const videoUrl = document.getElementById('videoUrl').value.trim();
             const btn = document.getElementById('btnAction');
             const loader = document.getElementById('loader');
             const result = document.getElementById('result');
             const errorBox = document.getElementById('error');
+            const errorText = document.getElementById('errorText');
 
-            if (!inputVal) return showMsg("Bos, linknya masih kosong!");
+            if (!videoUrl) return;
 
+            // Reset UI
             errorBox.classList.add('hidden');
             result.classList.add('hidden');
             loader.classList.remove('hidden');
             btn.disabled = true;
 
             try {
-                // Perbaikan endpoint: Tanpa trailing slash untuk menghindari 404
-                const endpoint = `https://${RAPID_HOST}/tiktok/media/service`;
+                // Endpoint Ziyotech yang benar berdasarkan data media service
+                const endpoint = `https://${RAPID_HOST}/tiktok/media/service/`;
                 
                 const response = await fetch(endpoint, {
                     method: 'POST',
@@ -113,50 +115,43 @@
                         'x-rapidapi-key': RAPID_KEY,
                         'x-rapidapi-host': RAPID_HOST
                     },
-                    body: new URLSearchParams({ url: inputVal })
+                    body: new URLSearchParams({ url: videoUrl })
                 });
 
-                if (response.status === 404) {
-                    throw new Error("Endpoint tidak ditemukan (404). Silakan periksa apakah API ini masih aktif di dashboard RapidAPI Bos.");
+                const rawData = await response.json();
+                console.log("Full Response:", rawData);
+
+                if (response.status !== 200) {
+                    throw new Error(`HTTP ${response.status}: ${rawData.detail || rawData.message || 'API Error'}`);
                 }
 
-                const res = await response.json();
-                console.log("API Response:", res);
-
-                // Menangani berbagai kemungkinan struktur response dari API Ziyotech
-                if (res.status === true || res.success === true || (res.data && res.data.video_url)) {
-                    const videoData = res.data;
+                // Struktur umum Ziyotech: { status: true, data: { video_url: "..." } }
+                if (rawData.status === true || rawData.success === true) {
+                    const videoInfo = rawData.data;
                     
-                    document.getElementById('vCover').src = videoData.cover || videoData.thumbnail || '';
-                    document.getElementById('vTitle').innerText = videoData.title || "TikTok Video";
+                    document.getElementById('vCover').src = videoInfo.cover || videoInfo.thumbnail || '';
+                    document.getElementById('vTitle').innerText = videoInfo.title || "TikTok Video";
                     
-                    // Prioritaskan video tanpa watermark
-                    const finalUrl = videoData.video_url || videoData.nowatermark || videoData.url;
+                    const finalDownloadUrl = videoInfo.video_url || videoInfo.nowatermark || videoInfo.url;
 
-                    if (!finalUrl) throw new Error("Link video tidak ditemukan dalam respon API.");
+                    if (!finalDownloadUrl) throw new Error("Link video tidak ditemukan dalam respon API.");
 
-                    document.getElementById('dlNow').onclick = () => {
-                        window.open(finalUrl, '_blank');
+                    document.getElementById('dlBtn').onclick = () => {
+                        window.open(finalDownloadUrl, '_blank');
                     };
 
                     result.classList.remove('hidden');
                 } else {
-                    showMsg(res.message || "Gagal memproses video. Pastikan link benar.");
+                    throw new Error(rawData.message || "Gagal mendapatkan data video. Link mungkin salah.");
                 }
 
             } catch (err) {
-                showMsg("Kesalahan: " + err.message);
-                console.error(err);
+                errorBox.classList.remove('hidden');
+                errorText.innerHTML = `<strong>ERROR:</strong> ${err.message}<br><small>Pastikan Anda sudah 'Subscribe' API Ziyotech di RapidAPI.</small>`;
             } finally {
                 loader.classList.add('hidden');
                 btn.disabled = false;
             }
-        }
-
-        function showMsg(m) {
-            const error = document.getElementById('error');
-            error.innerText = m;
-            error.classList.remove('hidden');
         }
     </script>
 </body>
