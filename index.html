@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,199 +7,193 @@
     <title>TikTok Ultra HD Downloader</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0b0b0f;
-            background-image: radial-gradient(circle at top right, #1e1b4b, #0b0b0f);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #050505;
+            background-image: 
+                radial-gradient(circle at 0% 0%, #1a1a2e 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, #2d1b2d 0%, transparent 50%);
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .glass {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .custom-loader {
-            border-right-color: transparent;
-            animation: spin 1s linear infinite;
+        .shimmer {
+            background: linear-gradient(90deg, #ff0050, #00f2fe, #ff0050);
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes shimmer {
+            to { background-position: 200% center; }
         }
     </style>
 </head>
-<body class="min-h-screen text-white flex flex-col items-center justify-center p-4">
+<body class="min-h-screen text-white flex flex-col items-center justify-center p-6">
 
     <div class="max-w-xl w-full">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight">
-                TT <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-400">UltraHD</span>
+        <!-- Judul -->
+        <div class="text-center mb-10">
+            <h1 class="text-5xl font-extrabold tracking-tighter mb-3">
+                TT <span class="text-transparent bg-clip-text shimmer">ULTRA</span>
             </h1>
-            <p class="text-gray-400 font-medium">Download video TikTok kualitas terbaik tanpa watermark.</p>
+            <p class="text-gray-400 text-sm tracking-widest uppercase font-bold">High Performance Downloader</p>
         </div>
 
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-            <div class="space-y-5">
+        <!-- Box Utama -->
+        <div class="glass rounded-[2rem] p-8 shadow-2xl">
+            <div class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-2">Tempel Link Video</label>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 ml-1">Link TikTok</label>
                     <input type="text" id="videoUrl" 
-                        placeholder="https://vt.tiktok.com/..." 
-                        class="w-full bg-black/40 border border-gray-700 rounded-xl px-4 py-4 focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all text-white placeholder-gray-600">
+                        placeholder="Tempel link video di sini..." 
+                        class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-pink-500/50 outline-none transition-all text-white placeholder-gray-600 shadow-inner">
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-2">Kualitas Target</label>
-                    <div class="relative">
-                        <select id="quality" class="w-full bg-black/40 border border-gray-700 rounded-xl px-4 py-4 focus:ring-2 focus:ring-cyan-500 outline-none appearance-none cursor-pointer">
-                            <option value="highres">Ultra HD (Paling Tinggi)</option>
-                            <option value="1080p">Full HD (1080p)</option>
-                            <option value="720p" selected>HD (720p)</option>
-                        </select>
-                        <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <div class="grid grid-cols-1 gap-4">
+                    <button onclick="fetchVideo()" id="btnAction" 
+                        class="w-full bg-white text-black hover:bg-gray-200 py-4 rounded-2xl font-extrabold text-lg transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                        <span id="btnText">PROSES VIDEO</span>
+                        <svg id="arrowIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loader" class="hidden mt-10 text-center">
+                <div class="inline-block w-12 h-12 border-[3px] border-pink-500/20 border-t-pink-500 rounded-full animate-spin mb-4"></div>
+                <p id="loaderText" class="text-xs text-gray-400 animate-pulse tracking-widest uppercase">Sedang memproses...</p>
+            </div>
+
+            <!-- Hasil Download -->
+            <div id="result" class="hidden mt-10 space-y-4">
+                <div class="flex items-center gap-5 p-4 bg-white/5 rounded-3xl border border-white/10">
+                    <img id="vCover" src="" class="w-20 h-28 object-cover rounded-xl shadow-lg">
+                    <div class="flex-1 overflow-hidden text-left">
+                        <h3 id="vTitle" class="font-bold text-lg truncate">Judul Video</h3>
+                        <p id="vAuthor" class="text-sm text-pink-500 mb-3 font-semibold">@user</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-[10px] bg-white/10 px-2 py-1 rounded-md text-gray-400 font-bold uppercase">MP4</span>
+                            <span class="text-[10px] bg-green-500/20 px-2 py-1 rounded-md text-green-400 font-bold uppercase tracking-widest">NO WATERMARK</span>
                         </div>
                     </div>
                 </div>
-
-                <button onclick="handleDownload()" id="btnAction" 
-                    class="w-full bg-gradient-to-r from-pink-600 to-indigo-600 hover:from-pink-500 hover:to-indigo-500 py-4 rounded-xl font-bold text-lg transition-all transform active:scale-95 shadow-lg shadow-pink-900/20 flex items-center justify-center">
-                    <span id="btnText">Ambil Video</span>
-                </button>
-            </div>
-
-            <!-- Loader Section -->
-            <div id="loader" class="hidden mt-8 text-center">
-                <div class="inline-block h-10 w-10 border-4 border-pink-500 custom-loader rounded-full mb-3"></div>
-                <p class="text-sm text-gray-400">Sedang mengekstrak video, mohon tunggu Bos...</p>
-            </div>
-
-            <!-- Result Section -->
-            <div id="result" class="hidden mt-8 border-t border-gray-800 pt-6">
-                <div class="bg-white/5 rounded-2xl p-4 flex flex-col md:flex-row items-center gap-6">
-                    <div class="relative group">
-                        <img id="thumb" src="" class="w-28 h-40 object-cover rounded-xl shadow-xl border border-white/10 bg-gray-900">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-xl"></div>
-                    </div>
-                    <div class="flex-1 text-center md:text-left">
-                        <h3 id="author" class="font-bold text-xl text-white mb-1 truncate max-w-[200px]">Video Ditemukan</h3>
-                        <p id="videoInfo" class="text-xs text-cyan-400 font-mono mb-4 uppercase tracking-tighter italic font-bold">KUALITAS TERBAIK</p>
-                        <a id="finalDownload" href="#" target="_blank" 
-                            class="inline-flex items-center justify-center bg-white text-black px-8 py-3 rounded-xl font-extrabold hover:bg-cyan-400 hover:text-black transition-all duration-300 w-full md:w-auto shadow-xl">
-                            DOWNLOAD MP4
-                        </a>
-                    </div>
+                
+                <div class="grid grid-cols-1 gap-3 pt-2">
+                    <button id="btnHD" class="flex justify-between items-center bg-gradient-to-r from-pink-600 to-rose-600 p-4 rounded-2xl font-bold hover:opacity-90 transition-all text-white">
+                        <span>DOWNLOAD HD (Normal)</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4-4v12"/></svg>
+                    </button>
+                    <button id="btnUHD" class="flex justify-between items-center bg-cyan-600 p-4 rounded-2xl font-bold hover:opacity-90 transition-all text-white">
+                        <span>DOWNLOAD ULTRA HD (Original)</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </button>
                 </div>
             </div>
 
-            <!-- Error Display -->
-            <div id="error" class="hidden mt-6 p-4 bg-red-900/20 border border-red-500/30 rounded-2xl text-red-400 text-sm flex items-center gap-3">
-                <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                <span id="errorText">Terjadi kesalahan.</span>
+            <!-- Error -->
+            <div id="error" class="hidden mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs text-center font-bold tracking-tight">
+                Gagal memproses link tersebut.
             </div>
         </div>
-
-        <p class="mt-8 text-center text-[10px] text-gray-600 uppercase tracking-[0.2em]">ULTRA HD ENGINE V3.0</p>
+        
+        <p class="mt-8 text-center text-[10px] text-gray-600 uppercase tracking-[0.4em] font-bold">Powered by TikWM Engine • V3.5</p>
     </div>
 
     <script>
-        // API Key milik Bos
-        const RAPID_API_KEY = "83d6e85235msh149468d45ef63bdp118d8djsnf928a331895f"; 
-        const RAPID_API_HOST = "social-media-video-downloader.p.rapidapi.com";
-
-        async function handleDownload() {
-            const urlInput = document.getElementById('videoUrl').value.trim();
-            const targetQuality = document.getElementById('quality').value;
+        async function fetchVideo() {
+            const url = document.getElementById('videoUrl').value.trim();
             const btn = document.getElementById('btnAction');
-            const btnText = document.getElementById('btnText');
             const loader = document.getElementById('loader');
+            const loaderText = document.getElementById('loaderText');
             const result = document.getElementById('result');
             const error = document.getElementById('error');
 
-            if (!urlInput) return showError("Bos, masukkan link TikTok-nya dulu!");
-            
+            if (!url) {
+                showMsg("Bos, masukkan linknya dulu ya!");
+                return;
+            }
+
+            // UI Reset
             error.classList.add('hidden');
             result.classList.add('hidden');
             loader.classList.remove('hidden');
+            loaderText.innerText = "Mencari video...";
             btn.disabled = true;
-            btnText.innerText = "Sabar Bos...";
 
             try {
-                // Endpoint /smvd/get/all biasanya yang paling stabil di API ini
-                const apiUrl = `https://${RAPID_API_HOST}/smvd/get/all?url=${encodeURIComponent(urlInput)}`;
-                
-                const response = await fetch(apiUrl, {
-                    method: 'GET',
-                    headers: { 
-                        'x-rapidapi-key': RAPID_API_KEY, 
-                        'x-rapidapi-host': RAPID_API_HOST 
-                    }
-                });
+                // Menggunakan API TikWM
+                const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(url)}&hd=1`;
+                const response = await fetch(apiUrl);
+                const json = await response.json();
 
-                // Cek jika API Key salah atau kuota habis (Error 401/403/429)
-                if (response.status === 401 || response.status === 403) {
-                    throw new Error("API Key Bos tidak valid atau belum di-subscribe di RapidAPI.");
-                }
-                if (response.status === 429) {
-                    throw new Error("Kuota API Bos sudah habis untuk bulan ini.");
-                }
-
-                const resData = await response.json();
-                console.log("Raw API Response:", resData);
-
-                // Normalisasi pengecekan data
-                let downloadUrl = "";
-                let displayQuality = "HD";
-                let thumbnail = "";
-                let title = "Video TikTok";
-
-                // Jika API mengembalikan array 'links' (format umum API ini)
-                if (resData && resData.links && Array.isArray(resData.links) && resData.links.length > 0) {
-                    // Cari link yang bukan watermark (biasanya kualitas ditandai 'highres' atau 'no_watermark')
-                    const found = resData.links.find(l => l.quality === targetQuality) || 
-                                  resData.links.find(l => l.quality.toLowerCase().includes('high')) || 
-                                  resData.links[0];
+                if (json.code === 0 && json.data) {
+                    const data = json.data;
                     
-                    downloadUrl = found.link;
-                    displayQuality = found.quality || "Original";
-                    thumbnail = resData.picture || resData.cover || '';
-                    title = resData.title || title;
-                } 
-                // Jika API langsung memberikan object tunggal (format cadangan)
-                else if (resData && resData.url) {
-                    downloadUrl = resData.url;
-                    thumbnail = resData.picture || '';
+                    document.getElementById('vCover').src = data.cover;
+                    document.getElementById('vTitle').innerText = data.title || "TikTok Video";
+                    document.getElementById('vAuthor').innerText = "@" + (data.author.nickname || "user");
+                    
+                    // Setup Download Buttons
+                    const hdUrl = "https://www.tikwm.com" + data.play;
+                    const uhdUrl = "https://www.tikwm.com" + (data.hdplay || data.play);
+                    const filename = `tiktok_video_${data.id}.mp4`;
+
+                    document.getElementById('btnHD').onclick = () => downloadFile(hdUrl, filename);
+                    document.getElementById('btnUHD').onclick = () => downloadFile(uhdUrl, `ultra_hd_${filename}`);
+                    
+                    result.classList.remove('hidden');
+                } else {
+                    showMsg("Gagal: " + (json.msg || "Link tidak valid atau video private."));
                 }
-
-                if (!downloadUrl) {
-                    throw new Error("Video ini diproteksi atau server sedang sibuk. Coba link lain.");
-                }
-
-                // Update UI dengan data yang didapat
-                document.getElementById('thumb').src = thumbnail || 'https://via.placeholder.com/300x500?text=No+Preview';
-                document.getElementById('author').innerText = title.length > 30 ? title.substring(0, 30) + "..." : title;
-                document.getElementById('videoInfo').innerText = displayQuality.toUpperCase() + " NO WATERMARK";
-                
-                const dlBtn = document.getElementById('finalDownload');
-                dlBtn.href = downloadUrl;
-                
-                result.classList.remove('hidden');
-
-            } catch (err) {
-                console.error("Download Error:", err);
-                showError(err.message);
+            } catch (e) {
+                showMsg("Gagal terhubung ke server. Coba lagi.");
             } finally {
                 loader.classList.add('hidden');
                 btn.disabled = false;
-                btnText.innerText = "Ambil Video";
             }
         }
 
-        function showError(msg) {
+        // Fungsi ajaib untuk memaksa download file MP4
+        async function downloadFile(url, name) {
+            const btn = document.getElementById('btnAction');
+            const loader = document.getElementById('loader');
+            const loaderText = document.getElementById('loaderText');
+            
+            loader.classList.remove('hidden');
+            loaderText.innerText = "Mendownload file...";
+            
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = blobUrl;
+                a.download = name;
+                document.body.appendChild(a);
+                a.click();
+                
+                // Cleanup
+                window.URL.revokeObjectURL(blobUrl);
+                document.body.removeChild(a);
+            } catch (e) {
+                // Fallback jika fetch blob gagal karena CORS
+                window.open(url, '_blank');
+            } finally {
+                loader.classList.add('hidden');
+            }
+        }
+
+        function showMsg(m) {
             const error = document.getElementById('error');
-            const errorText = document.getElementById('errorText');
-            errorText.innerText = msg;
+            error.innerText = m;
             error.classList.remove('hidden');
-            document.getElementById('loader').classList.add('hidden');
         }
     </script>
 </body>
 </html>
+
+```
